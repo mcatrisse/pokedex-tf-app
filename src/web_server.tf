@@ -3,15 +3,17 @@ resource "aws_instance" "poke_app" {
   instance_type =  "t3.micro"
   vpc_security_group_ids      = [aws_security_group.app_pokemon_sg.id]
   associate_public_ip_address = true
-  key_name = "vockey"
   user_data = file("init_script.sh")
-  iam_instance_profile = "LabInstanceProfile"
+  iam_instance_profile = var.create_iam_role ? aws_iam_instance_profile.pokedex_instance_profile[0].name : "LabInstanceProfile"
   root_block_device {
     volume_size = 20
     volume_type = "gp3"
   }
+  depends_on = [
+    aws_default_vpc.default
+  ]
   tags = {
-    Name = "pokeapp"
+    Name   = "PokeappServer"
   }
 }
 
@@ -25,9 +27,16 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+resource "aws_default_vpc" "default" {
+  tags = {
+    Name = "Default VPC"
+  }
+}
+
 resource "aws_security_group" "app_pokemon_sg" {
   name        = "app_pokemon_sg"
   description = "PokeApp security group"
+  vpc_id = aws_default_vpc.default.id
   ingress {
     description      = "HTTP from Anywhere"
     from_port        = 80
