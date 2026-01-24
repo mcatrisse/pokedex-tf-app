@@ -4,7 +4,7 @@ sudo apt-get update
 sudo apt-get -y upgrade
 
 # Download dist file PokeDex release
-wget https://github.com/TheMatrix97/pokedex-angular-app/releases/download/refs%2Fheads%2Fmaster/dist.tar.gz
+wget https://github.com/mcatrisse/pokedex-angular-app/releases/download/refs%2Fheads%2Fmaster/dist.tar.gz
 
 tar -xvf dist.tar.gz
 
